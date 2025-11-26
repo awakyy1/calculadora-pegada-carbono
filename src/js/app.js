@@ -151,22 +151,34 @@ class CarbonCalculatorApp {
     
     async loadWeatherData(city) {
         try {
-            const response = await this.api.getWeather(city);
+            console.log('🌤️ Buscando clima para:', city);
             
-            if (response && (response.success || response.data)) {
-                this.state.weather = response.data;
-                this.eventBus.notify('weatherLoaded', response.data);
-                console.log('🌤️ Clima:', response.data);
-            } else {
-                // Fallback com dados padrão
-                const defaultWeather = {
-                    city: city,
-                    temp: 25,
-                    condition: 'Clima agradável',
-                    simulated: true
+            // Chamar OpenWeather API DIRETAMENTE do navegador
+            const API_KEY = '146f92a8656aa0b3996755ddfa0ae720';
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric&lang=pt_br`;
+            
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error('Falha na API de clima');
+            }
+            
+            const data = await response.json();
+            
+            if (data.main && data.weather) {
+                const weatherData = {
+                    city: data.name,
+                    temp: Math.round(data.main.temp),
+                    condition: data.weather[0].description,
+                    humidity: data.main.humidity,
+                    simulated: false
                 };
-                this.state.weather = defaultWeather;
-                this.eventBus.notify('weatherLoaded', defaultWeather);
+                
+                this.state.weather = weatherData;
+                this.eventBus.notify('weatherLoaded', weatherData);
+                console.log('🌤️ Clima:', weatherData);
+            } else {
+                throw new Error('Dados inválidos');
             }
         } catch (error) {
             console.log('🌤️ Usando dados climáticos simulados');
@@ -175,6 +187,7 @@ class CarbonCalculatorApp {
                 city: city,
                 temp: 25,
                 condition: 'Clima agradável',
+                humidity: 60,
                 simulated: true
             };
             this.state.weather = defaultWeather;
