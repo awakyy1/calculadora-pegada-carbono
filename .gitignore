@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-package-lock.json
+# package-lock.json - NECESSÁRIO para Railway/Docker build
 
 # Environment variables
 .env
