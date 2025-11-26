@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Pegada de Carbono - ODS 13</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Tela Inicial -->
+        <div id="tela-inicial" class="tela ativa">
+            <h1>Calculadora de Pegada de Carbono</h1>
+            <div class="ods-info">
+                <strong>ODS 13 - Ação Contra a Mudança Global do Clima</strong><br>
+                Calcule sua pegada de carbono e descubra como reduzir suas emissões de CO₂
+            </div>
+            <button class="botao" onclick="mostrarTela('tela-formulario')">Começar</button>
+        </div>
+
+        <!-- Tela de Formulário -->
+        <div id="tela-formulario" class="tela">
+            <h2>Informe seus dados</h2>
+            
+            <div class="form-group">
+                <label for="km-carro">Quilômetros percorridos de carro por semana:</label>
+                <input type="number" id="km-carro" min="0" placeholder="Ex: 100" />
+            </div>
+
+            <div class="form-group">
+                <label for="refeicoes-carne">Número de refeições com carne por semana:</label>
+                <input type="number" id="refeicoes-carne" min="0" placeholder="Ex: 10" />
+            </div>
+
+            <button class="botao" onclick="calcularPegada()">Calcular</button>
+            <button class="botao secondary" onclick="mostrarTela('tela-inicial')">Voltar</button>
+        </div>
+
+        <!-- Tela de Resultado -->
+        <div id="tela-resultado" class="tela">
+            <h2>Sua Pegada de Carbono</h2>
+            
+            <div class="resultado">
+                <h3>Estimativa Semanal de Emissão de CO₂</h3>
+                <p id="resultado-co2"></p>
+                <p id="resultado-anual"></p>
+            </div>
+
+            <div class="dicas">
+                <h4>Dicas para Reduzir suas Emissões</h4>
+                <ul>
+                    <li><strong>Transporte:</strong> Use transporte público, bicicleta ou caminhe quando possível</li>
+                    <li><strong>Alimentação:</strong> Reduza o consumo de carne vermelha e inclua mais vegetais na dieta</li>
+                    <li><strong>Carona solidária:</strong> Compartilhe viagens com outras pessoas</li>
+                    <li><strong>Veículos eficientes:</strong> Considere carros híbridos ou elétricos</li>
+                    <li><strong>Planejamento:</strong> Combine várias tarefas em uma única viagem</li>
+                </ul>
+            </div>
+
+            <button class="botao" onclick="mostrarTela('tela-formulario')"> Calcular Novamente</button>
+            <button class="botao secondary" onclick="mostrarTela('tela-inicial')">Início</button>
+        </div>
+    </div>
+
+    <script>
+        // Função para mostrar uma tela específica
+        function mostrarTela(idTela) {
+            // Oculta todas as telas
+            const telas = document.querySelectorAll('.tela');
+            telas.forEach(tela => {
+                tela.classList.remove('ativa');
+            });
+            
+            // Mostra a tela selecionada
+            document.getElementById(idTela).classList.add('ativa');
+        }
+
+        // Função para calcular a pegada de carbono
+        function calcularPegada() {
+            // Obtém os valores dos campos
+            const kmCarro = parseFloat(document.getElementById('km-carro').value) || 0;
+            const refeicoesCarne = parseFloat(document.getElementById('refeicoes-carne').value) || 0;
+            
+            // Validação básica
+            if (kmCarro < 0 || refeicoesCarne < 0) {
+                // Criar notificação personalizada ao invés de alert
+                mostrarNotificacao('Por favor, insira valores válidos (não negativos).', 'erro');
+                return;
+            }
+            
+            // Validação se pelo menos um campo foi preenchido
+            if (kmCarro === 0 && refeicoesCarne === 0) {
+                mostrarNotificacao('Preencha pelo menos um campo para calcular.', 'aviso');
+                return;
+            }
+            
+            // Animação de carregamento
+            const botaoCalcular = document.querySelector('button[onclick="calcularPegada()"]');
+            const textoOriginal = botaoCalcular.innerHTML;
+            botaoCalcular.innerHTML = 'Calculando...';
+            botaoCalcular.disabled = true;
+            
+            // Simula um pequeno delay para mostrar o loading
+            setTimeout(() => {
+                // Cálculo fictício e simples: CO₂ = km * 0.2 + carne * 2
+                const co2Semanal = (kmCarro * 0.2) + (refeicoesCarne * 2);
+                const co2Anual = co2Semanal * 52; // 52 semanas no ano
+                
+                // Atualiza o resultado na tela
+                document.getElementById('resultado-co2').innerHTML = 
+                    `<strong>${co2Semanal.toFixed(2)} kg de CO₂ por semana</strong>`;
+                
+                document.getElementById('resultado-anual').innerHTML = 
+                    `Projeção anual: <strong>${co2Anual.toFixed(2)} kg de CO₂</strong>`;
+                
+                // Restaura o botão
+                botaoCalcular.innerHTML = textoOriginal;
+                botaoCalcular.disabled = false;
+                
+                // Mostra a tela de resultado
+                mostrarTela('tela-resultado');
+            }, 800);
+        }
+
+        // Função para mostrar notificações personalizadas
+        function mostrarNotificacao(mensagem, tipo = 'info') {
+            const notificacao = document.createElement('div');
+            notificacao.className = `notificacao ${tipo}`;
+            notificacao.textContent = mensagem;
+            
+            document.body.appendChild(notificacao);
+            
+            // Remove a notificação após 3 segundos
+            setTimeout(() => {
+                notificacao.remove();
+            }, 3000);
+        }
+
+        // Função para permitir calcular com Enter nos campos de input
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        calcularPegada();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

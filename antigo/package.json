@@ -1,0 +1,14 @@
+{
+  "name": "calculadora-pegada-carbono",
+  "version": "1.0.0",
+  "description": "Protótipo de Calculadora de Pegada de Carbono - ODS 13",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "open": "Invoke-Item index.html",
+    "serve": "npx http-server -p 3000 -o"
+  },
+  "keywords": ["pegada-carbono", "ods13", "prototipo"],
+  "author": "",
+  "license": "MIT"
+}

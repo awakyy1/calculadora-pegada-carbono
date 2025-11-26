@@ -1,0 +1,49 @@
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentação (não necessária no container)
+*.md
+docs/
+LICENSE
+
+# Scripts de desenvolvimento
+scripts/
+
+# Kubernetes (não usado no Railway)
+k8s/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Vercel (não usado)
+.vercel
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment (será configurado no Railway)
+.env.local
+.env.development
+.env.test
+
+# Build artifacts
+dist/
+build/
+

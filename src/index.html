@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Pegada de Carbono</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles_dashboard.css">
+    <link rel="stylesheet" href="styles_counter.css">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-logo">
+                    <i class="fas fa-leaf header-icon"></i>
+                    <h1>Calculadora de Pegada de Carbono</h1>
+                </div>
+                <div class="header-info">
+                    <span id="location-info" class="info-badge">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Detectando localização...</span>
+                    </span>
+                    <span id="weather-info" class="info-badge"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="tela-inicial" class="tela ativa">
+            <div class="welcome-card">
+                <div class="hero-section">
+                    <h2>Calculadora de Pegada de Carbono</h2>
+                    <p class="hero-subtitle">Entenda o impacto das suas ações no planeta e descubra como contribuir para um futuro sustentável.</p>
+                    
+                    <div class="community-badge">
+                        <i class="fas fa-users"></i>
+                        <span class="badge-text">
+                            <strong id="total-calculations">0</strong> pegadas de carbono calculadas
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-globe-americas"></i>
+                        </div>
+                        <div class="stat-value">1.5°C</div>
+                        <div class="stat-label">Meta de Aquecimento Global</div>
+                        <div class="stat-desc">Acordo de Paris</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-value">36 Gt</div>
+                        <div class="stat-label">CO₂ Anual Global</div>
+                        <div class="stat-desc">Emissões em 2023</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="stat-value">4.5 t</div>
+                        <div class="stat-label">Média Per Capita/Ano</div>
+                        <div class="stat-desc">No Brasil</div>
+                    </div>
+                </div>
+                
+                <div class="features-professional">
+                    <div class="feature-pro">
+                        <div class="feature-pro-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="feature-pro-content">
+                            <h3>Cálculo Preciso</h3>
+                            <p>Algoritmos baseados em dados científicos e fatores regionalizados</p>
+                        </div>
+                    </div>
+                    <div class="feature-pro">
+                        <div class="feature-pro-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div class="feature-pro-content">
+                            <h3>Dashboard Completo</h3>
+                            <p>Visualize suas emissões com comparações e contexto global</p>
+                        </div>
+                    </div>
+                    <div class="feature-pro">
+                        <div class="feature-pro-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div class="feature-pro-content">
+                            <h3>Ações Práticas</h3>
+                            <p>Receba recomendações personalizadas para reduzir seu impacto</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="começar" class="btn btn-primary btn-large">
+                    <i class="fas fa-calculator"></i>
+                    <span>Calcular Minha Pegada de Carbono</span>
+                </button>
+                
+                <div class="disclaimer">
+                    <i class="fas fa-lightbulb"></i>
+                    <p><strong>Por que isso importa?</strong> Cada tonelada de CO₂ contribui para o aquecimento global. Conhecer sua pegada é o primeiro passo para reduzi-la.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="tela-formulario" class="tela">
+            <div class="form-card">
+                <h2>Conte-nos sobre seu dia a dia</h2>
+                <p class="subtitle">Responda perguntas simples sobre seus hábitos diários</p>
+                
+                <!-- Transporte -->
+                <div class="question-group">
+                    <h3><i class="fas fa-car"></i> Transporte</h3>
+                    
+                    <div class="form-group">
+                        <label>Você usa carro?</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="usa-carro" value="sim" />
+                                <span>Sim</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="usa-carro" value="nao" checked />
+                                <span>Não</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group conditional" id="carro-detalhes" style="display: none;">
+                        <label for="tempo-carro">Quanto tempo por dia você passa dirigindo?</label>
+                        <select id="tempo-carro" class="select-input">
+                            <option value="0">Não uso</option>
+                            <option value="15">15 minutos</option>
+                            <option value="30" selected>30 minutos</option>
+                            <option value="60">1 hora</option>
+                            <option value="90">1h30</option>
+                            <option value="120">2 horas</option>
+                            <option value="180">Mais de 2 horas</option>
+                        </select>
+                        <small class="help-text"><i class="fas fa-info-circle"></i> Tempo médio de ida e volta ao trabalho/escola</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transporte-publico">Usa ônibus/metrô/trem?</label>
+                        <select id="transporte-publico" class="select-input">
+                            <option value="0">Não uso</option>
+                            <option value="30">Raramente (1-2x/semana)</option>
+                            <option value="60" selected>Às vezes (3-4x/semana)</option>
+                            <option value="100">Frequentemente (todos os dias)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Alimentação -->
+                <div class="question-group">
+                    <h3><i class="fas fa-utensils"></i> Alimentação</h3>
+                    
+                    <div class="form-group">
+                        <label>Quantas vezes por semana você come carne?</label>
+                        <div class="slider-group">
+                            <input type="range" id="refeicoes-carne" min="0" max="21" value="7" class="slider" />
+                            <div class="slider-value">
+                                <span id="carne-value">7</span> refeições/semana
+                            </div>
+                        </div>
+                        <div class="slider-labels">
+                            <span>Nunca</span>
+                            <span>Raramente</span>
+                            <span>Moderado</span>
+                            <span>Frequente</span>
+                        </div>
+                        <small class="help-text"><i class="fas fa-info-circle"></i> Inclui almoço e jantar</small>
+                    </div>
+                </div>
+                
+                <!-- Energia em Casa -->
+                <div class="question-group">
+                    <h3><i class="fas fa-bolt"></i> Energia em Casa</h3>
+                    
+                    <div class="form-group">
+                        <label>Quantas pessoas moram na sua casa?</label>
+                        <select id="pessoas-casa" class="select-input">
+                            <option value="1">Moro sozinho(a)</option>
+                            <option value="2" selected>2 pessoas</option>
+                            <option value="3">3 pessoas</option>
+                            <option value="4">4 pessoas</option>
+                            <option value="5">5 ou mais pessoas</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tipo da sua residência:</label>
+                        <select id="tipo-residencia" class="select-input">
+                            <option value="30">Apartamento pequeno</option>
+                            <option value="50" selected>Apartamento médio/Casa pequena</option>
+                            <option value="80">Casa média</option>
+                            <option value="120">Casa grande</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Uso de ar condicionado:</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="ar-condicionado" value="0" checked />
+                                <span>Não uso</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="ar-condicionado" value="20" />
+                                <span>Pouco (verão)</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="ar-condicionado" value="40" />
+                                <span>Frequente</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="calcular" class="btn btn-primary">
+                        <i class="fas fa-calculator"></i>
+                        <span>Calcular Minha Pegada</span>
+                    </button>
+                    <button id="voltar" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Voltar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tela-resultado" class="tela">
+            <div class="result-card">
+                <div id="resultado-co2"></div>
+                <div class="button-group">
+                    <button id="calcular-novamente" class="btn btn-primary">
+                        <i class="fas fa-redo"></i>
+                        <span>Calcular Novamente</span>
+                    </button>
+                    <button id="inicio" class="btn btn-secondary">
+                        <i class="fas fa-home"></i>
+                        <span>Início</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-cogs"></i> Tecnologias</h4>
+                    <p>Microserviços • APIs Públicas • Design Patterns • Kubernetes</p>
+                </div>
+                <div class="footer-section">
+                    <h4><i class="fas fa-satellite-dish"></i> APIs Integradas</h4>
+                    <p>Geolocalização • OpenWeather • Cálculo de Carbono</p>
+                </div>
+                <div class="footer-section">
+                    <h4><i class="fas fa-code"></i> Open Source</h4>
+                    <p>MIT License • Contribuições bem-vindas</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p><i class="fas fa-leaf"></i> 2025 Calculadora de Pegada de Carbono</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

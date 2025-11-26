@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: carbon-calculator-service
+  labels:
+    app: carbon-calculator
+spec:
+  type: LoadBalancer
+  selector:
+    app: carbon-calculator
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+    name: http
+  sessionAffinity: ClientIP
+
