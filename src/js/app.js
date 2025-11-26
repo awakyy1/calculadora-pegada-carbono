@@ -102,32 +102,44 @@ class CarbonCalculatorApp {
     
     async loadLocationData() {
         try {
-            // Timeout de 3 segundos para não travar
-            const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Timeout')), 3000)
-            );
+            console.log('📍 Detectando localização do usuário...');
             
-            const locationPromise = this.api.getLocation();
+            // Chamar IP-API DIRETAMENTE do navegador (não passa pelo servidor!)
+            // Isso pega o IP REAL do usuário, não o IP do servidor Railway
+            const response = await fetch('http://ip-api.com/json/?fields=status,country,countryCode,city,lat,lon,region');
             
-            const response = await Promise.race([locationPromise, timeoutPromise]);
+            if (!response.ok) {
+                throw new Error('Falha na geolocalização');
+            }
             
-            if (response && response.success) {
-                this.state.location = response.data;
-                this.eventBus.notify('locationLoaded', response.data);
-                console.log('📍 Localização:', response.data);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                this.state.location = {
+                    country: data.country,
+                    countryCode: data.countryCode,
+                    city: data.city,
+                    region: data.region,
+                    lat: data.lat,
+                    lon: data.lon
+                };
+                
+                this.eventBus.notify('locationLoaded', this.state.location);
+                console.log('📍 Localização:', this.state.location);
                 
                 // Carregar clima automaticamente após obter localização
-                await this.loadWeatherData(response.data.city || 'São Paulo');
+                await this.loadWeatherData(this.state.location.city || 'São Paulo');
             } else {
                 throw new Error('Resposta inválida');
             }
         } catch (error) {
-            console.log('📍 Usando localização padrão');
+            console.log('📍 Usando localização padrão (São Paulo)');
             // Usar localização padrão (sem erro, é esperado)
             this.state.location = { 
                 countryCode: 'BR', 
-                country: 'Brasil',
-                city: 'São Paulo'
+                country: 'Brazil',
+                city: 'São Paulo',
+                region: 'São Paulo'
             };
             this.eventBus.notify('locationLoaded', this.state.location);
             
