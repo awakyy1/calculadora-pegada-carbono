@@ -17,21 +17,71 @@ export class UIManager {
     }
     
     initCounter() {
-        // Inicializar contador de usuários
+        // Inicializar contador de usuários com incremento automático
         const count = this.getUserCount();
         this.updateCounter(count);
+        
+        // Atualizar contador automaticamente a cada visita
+        this.autoIncrementCounter();
     }
     
     getUserCount() {
         // Pegar contador do localStorage
-        const count = localStorage.getItem('carbonCalculatorUserCount');
-        return count ? parseInt(count) : 0;
+        const data = localStorage.getItem('carbonCalculatorData');
+        
+        if (!data) {
+            // Primeira vez - inicializar em 90
+            const initialData = {
+                count: 90,
+                lastUpdate: Date.now()
+            };
+            localStorage.setItem('carbonCalculatorData', JSON.stringify(initialData));
+            return 90;
+        }
+        
+        const parsed = JSON.parse(data);
+        return parsed.count || 90;
+    }
+    
+    autoIncrementCounter() {
+        // Incremento automático baseado em tempo (1 a cada 20 horas)
+        const data = localStorage.getItem('carbonCalculatorData');
+        
+        if (!data) return;
+        
+        const parsed = JSON.parse(data);
+        const now = Date.now();
+        const lastUpdate = parsed.lastUpdate || now;
+        
+        // Calcular quantas horas se passaram
+        const hoursElapsed = (now - lastUpdate) / (1000 * 60 * 60);
+        
+        // Incrementar 1 a cada 20 horas
+        const incrementAmount = Math.floor(hoursElapsed / 20);
+        
+        if (incrementAmount > 0) {
+            const newCount = parsed.count + incrementAmount;
+            const newData = {
+                count: newCount,
+                lastUpdate: now
+            };
+            localStorage.setItem('carbonCalculatorData', JSON.stringify(newData));
+            this.updateCounter(newCount);
+        }
     }
     
     incrementUserCount() {
-        const currentCount = this.getUserCount();
-        const newCount = currentCount + 1;
-        localStorage.setItem('carbonCalculatorUserCount', newCount);
+        // Incremento manual quando alguém calcula
+        const data = localStorage.getItem('carbonCalculatorData');
+        const parsed = data ? JSON.parse(data) : { count: 90, lastUpdate: Date.now() };
+        
+        const newCount = parsed.count + 1;
+        const newData = {
+            count: newCount,
+            lastUpdate: Date.now()
+        };
+        
+        localStorage.setItem('carbonCalculatorData', JSON.stringify(newData));
         this.updateCounter(newCount);
         return newCount;
     }
