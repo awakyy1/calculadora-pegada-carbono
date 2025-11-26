@@ -106,7 +106,8 @@ class CarbonCalculatorApp {
             
             // Chamar IP-API DIRETAMENTE do navegador (não passa pelo servidor!)
             // Isso pega o IP REAL do usuário, não o IP do servidor Railway
-            const response = await fetch('http://ip-api.com/json/?fields=status,country,countryCode,city,lat,lon,region');
+            // Usar HTTPS para evitar Mixed Content no Railway
+            const response = await fetch('https://ipapi.co/json/');
             
             if (!response.ok) {
                 throw new Error('Falha na geolocalização');
@@ -114,14 +115,14 @@ class CarbonCalculatorApp {
             
             const data = await response.json();
             
-            if (data.status === 'success') {
+            if (data.city) {
                 this.state.location = {
-                    country: data.country,
-                    countryCode: data.countryCode,
+                    country: data.country_name,
+                    countryCode: data.country_code,
                     city: data.city,
                     region: data.region,
-                    lat: data.lat,
-                    lon: data.lon
+                    lat: data.latitude,
+                    lon: data.longitude
                 };
                 
                 this.eventBus.notify('locationLoaded', this.state.location);
