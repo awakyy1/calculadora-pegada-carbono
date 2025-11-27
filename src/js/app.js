@@ -104,10 +104,9 @@ class CarbonCalculatorApp {
         try {
             console.log('📍 Detectando localização do usuário...');
             
-            // Chamar IP-API DIRETAMENTE do navegador (não passa pelo servidor!)
-            // Isso pega o IP REAL do usuário, não o IP do servidor Railway
-            // Usar HTTPS para evitar Mixed Content no Railway
-            const response = await fetch('https://ipapi.co/json/');
+            // Usar ip-api.com que aceita CORS e funciona direto do navegador!
+            // Pega o IP REAL do usuário (não o IP do servidor)
+            const response = await fetch('http://ip-api.com/json/?fields=status,country,countryCode,region,city,lat,lon,query');
             
             console.log('📍 Status da resposta:', response.status, response.statusText);
             
@@ -118,24 +117,25 @@ class CarbonCalculatorApp {
             const data = await response.json();
             console.log('📍 Dados completos da API:', data);
             
-            if (data.city) {
+            if (data.status === 'success' && data.city) {
                 this.state.location = {
-                    country: data.country_name,
-                    countryCode: data.country_code,
+                    country: data.country,
+                    countryCode: data.countryCode,
                     city: data.city,
                     region: data.region,
-                    lat: data.latitude,
-                    lon: data.longitude,
-                    ip: data.ip
+                    lat: data.lat,
+                    lon: data.lon,
+                    ip: data.query
                 };
                 
                 this.eventBus.notify('locationLoaded', this.state.location);
                 console.log('✅ Localização detectada:', this.state.location);
+                console.log(`🌍 Você está em: ${data.city}, ${data.country} (IP: ${data.query})`);
                 
                 // Carregar clima automaticamente após obter localização
                 await this.loadWeatherData(this.state.location.city || 'São Paulo');
             } else {
-                console.error('❌ API retornou dados sem city:', data);
+                console.error('❌ API retornou dados inválidos:', data);
                 throw new Error('Resposta inválida - sem city');
             }
         } catch (error) {
