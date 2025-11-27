@@ -109,11 +109,14 @@ class CarbonCalculatorApp {
             // Usar HTTPS para evitar Mixed Content no Railway
             const response = await fetch('https://ipapi.co/json/');
             
+            console.log('📍 Status da resposta:', response.status, response.statusText);
+            
             if (!response.ok) {
-                throw new Error('Falha na geolocalização');
+                throw new Error(`Falha na geolocalização: ${response.status}`);
             }
             
             const data = await response.json();
+            console.log('📍 Dados completos da API:', data);
             
             if (data.city) {
                 this.state.location = {
@@ -122,18 +125,21 @@ class CarbonCalculatorApp {
                     city: data.city,
                     region: data.region,
                     lat: data.latitude,
-                    lon: data.longitude
+                    lon: data.longitude,
+                    ip: data.ip
                 };
                 
                 this.eventBus.notify('locationLoaded', this.state.location);
-                console.log('📍 Localização:', this.state.location);
+                console.log('✅ Localização detectada:', this.state.location);
                 
                 // Carregar clima automaticamente após obter localização
                 await this.loadWeatherData(this.state.location.city || 'São Paulo');
             } else {
-                throw new Error('Resposta inválida');
+                console.error('❌ API retornou dados sem city:', data);
+                throw new Error('Resposta inválida - sem city');
             }
         } catch (error) {
+            console.error('❌ Erro na geolocalização:', error);
             console.log('📍 Usando localização padrão (São Paulo)');
             // Usar localização padrão (sem erro, é esperado)
             this.state.location = { 
