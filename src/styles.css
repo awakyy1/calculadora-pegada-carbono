@@ -90,6 +90,21 @@ body {
     font-size: 16px;
 }
 
+.badge-projeto-link {
+    background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    border: 2px solid rgba(76, 175, 80, 0.6);
+    transition: all 0.3s ease;
+}
+
+.badge-projeto-link:hover {
+    background: linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%);
+    border-color: #4CAF50;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
 .container {
     max-width: 1400px;
     margin: 0 auto;
