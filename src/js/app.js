@@ -104,9 +104,9 @@ class CarbonCalculatorApp {
         try {
             console.log('📍 Detectando localização do usuário...');
             
-            // Usar ip-api.com que aceita CORS e funciona direto do navegador!
-            // Pega o IP REAL do usuário (não o IP do servidor)
-            const response = await fetch('http://ip-api.com/json/?fields=status,country,countryCode,region,city,lat,lon,query');
+            // Usar ipwhois.app: HTTPS + CORS + Grátis (10.000 req/mês)
+            // Pega o IP REAL do usuário e funciona em HTTP e HTTPS
+            const response = await fetch('https://ipwhois.app/json/');
             
             console.log('📍 Status da resposta:', response.status, response.statusText);
             
@@ -117,20 +117,20 @@ class CarbonCalculatorApp {
             const data = await response.json();
             console.log('📍 Dados completos da API:', data);
             
-            if (data.status === 'success' && data.city) {
+            if (data.success && data.city) {
                 this.state.location = {
                     country: data.country,
-                    countryCode: data.countryCode,
+                    countryCode: data.country_code,
                     city: data.city,
                     region: data.region,
-                    lat: data.lat,
-                    lon: data.lon,
-                    ip: data.query
+                    lat: data.latitude,
+                    lon: data.longitude,
+                    ip: data.ip
                 };
                 
                 this.eventBus.notify('locationLoaded', this.state.location);
                 console.log('✅ Localização detectada:', this.state.location);
-                console.log(`🌍 Você está em: ${data.city}, ${data.country} (IP: ${data.query})`);
+                console.log(`🌍 Você está em: ${data.city}, ${data.country} (IP: ${data.ip})`);
                 
                 // Carregar clima automaticamente após obter localização
                 await this.loadWeatherData(this.state.location.city || 'São Paulo');
